@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="GitApp">
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Type" content="text/html">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Get Github Info</title>
+	<script src="app.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="jquery-3.2.1.min.js"></script>
+</head>
+<body ng-controller="GitCtrl">
+
+<!-- <h2 style="display: inline-block;">Good</h2><span class="glyphicon glyphicon-plus"></span>
+ -->
+ 	<div class="row">
+ 		<div class="col-xs-offset-4 col-xs-4 container jumbotron" style="margin-top: 10px;">
+ 			<h2 style="padding-top: 0; margin-top: 0;">Github API app</h2>
+
+			<form>
+				<p>Enter a single Github username below and click the button to display profile info.</p>
+				<div class="form-group">
+					<label for="username">Username:</label>
+					<input type="text" class="form-control" ng-model="username" placeholder="enter Github username here">
+				</div>
+
+				<button type="submit" class="btn btn-info" ng-click="getGitInfo()">Get Data</button>
+			</form>
+		</div>
+ 	</div>
+	
+
+	<div class="row">
+		<div ng-show="userNotFound" class="col-xs-offset-4 col-xs-4 jumbotron container">
+			<h2>No User Info Found for {{username}}</h2>
+		</div>
+
+		
+			<div ng-show="loaded" class="jumbotron container">
+			<div class="row" style="margin-top: 0;">
+				<h2 class="col-xs-offset-1"> {{user.name}}
+				<span>(@<a href="{{user.html_url}}" target="_blank">{{user.login}}</a>)</span>
+			</h2>
+
+			<div class="row">
+					<div class="col-xs-offset-1 col-xs-4">
+						<a href="{{ user.html_url }}" target="_blank">
+						<img src="{{ user.avatar_url }}" width="120" height="120" alt="{{ user.login }}">
+	               		</a>
+					</div>				
+				
+				<dl class="col-xs-4">
+					<dt>Followers</dt>
+						<dd>--{{ user.followers }}</dd>
+					<dt>Following</dt>
+						<dd>--{{ user.following }}</dd>
+					<dt>Repos</dt>
+						<dd>--{{ user.public_repos }}</dd>
+				</dl>
+			</div>
+
+               <!-- <p>Followers: {{ user.followers }}<br>
+               Following: {{ user.following }}<br>
+               Repos: {{ user.public_repos }}</p> -->
+			</div>
+
+			<div class="container">
+				<p ng-hide="reposFound">{{user.name}} doesn't av a repository yet!</p>
+
+				<div class="container" ng-show="reposFound">
+					<p><strong>Repos List:</strong></p>
+					<div class="list-group" ng-repeat="repo in repos">
+						<div class="list-group-item">
+							<div class="row">
+								<div class="col-xs-10">
+									<a href="{{repo.html_url}}" class="list-group-item" target="_blank">{{repo.name}}</a>
+								</div>
+
+							<div class="col-xs-2">
+								<span class="glyphicon glyphicon-plus"  ng-click="getCommits(repo)"></span>
+
+								<span class="glyphicon glyphicon-minus"  ng-click="hideCommits(repo)"></span>
+							</div>
+							</div>
+
+							<p class="well" ng-show="repo.showcommits == true && repo.commits.length < 1">
+								There are no commits for {{repo.name}}
+							</p>
+							<div class="well" ng-show="repo.showcommits == true && repo.commits.length > 0">
+								<ul ng-repeat="commit in repo.commits | limitTo : 10">
+									<li>
+										<div><pre>
+											{{commit | json}}
+										</pre></div>
+									</li>
+								</ul>
+					</div>
+						</div>
+				</div>
+			</div>
+		</div>
+	</div>
+		
+			
+	</div>	
+		
+</body>
+</html>
